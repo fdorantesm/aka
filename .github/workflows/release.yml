@@ -1,0 +1,101 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - version.txt
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.23"
+      - name: Determine Semver Version
+        id: semver
+        run: |
+          if [ ! -f version.txt ]; then
+            echo "1.0.0" > version.txt
+          fi
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1` || echo "v0.0.0")
+          if [[ $LATEST_TAG == "v0.0.0" ]]; then
+            VERSION="1.0.0"
+          else
+            VERSION=${LATEST_TAG:1}
+            MAJOR=$(echo $VERSION | cut -d. -f1)
+            MINOR=$(echo $VERSION | cut -d. -f2)
+            PATCH=$(echo $VERSION | cut -d. -f3)
+            BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+            if [[ $BRANCH_NAME == "main" ]]; then
+              if [[ $(git log -1 --pretty=%B) == *"#major"* ]]; then
+                MAJOR=$((MAJOR + 1))
+                MINOR=0
+                PATCH=0
+              elif [[ $(git log -1 --pretty=%B) == *"#minor"* ]]; then
+                MINOR=$((MINOR + 1))
+                PATCH=0
+              else
+                PATCH=$((PATCH + 1))
+              fi
+            elif [[ $BRANCH_NAME == "develop" ]]; then
+              MINOR=$((MINOR + 1))
+              PATCH=0
+            else
+              PATCH=$((PATCH + 1))
+            fi
+            VERSION="$MAJOR.$MINOR.$PATCH"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_ENV
+      - name: Build
+        run: |
+          VERSION=$(cat version.txt 2>/dev/null || echo "1.0.0")
+          GOOS=linux GOARCH=amd64 go build -ldflags "-X aka/src/cmd.compiledVersion=$VERSION" -o dist/aka-linux ./src/main.go
+          GOOS=darwin GOARCH=amd64 go build -ldflags "-X aka/src/cmd.compiledVersion=$VERSION" -o dist/aka-darwin ./src/main.go
+      - name: Generate version.txt
+        run: echo "${{ env.VERSION }}" > version.txt
+      - name: Create Tag
+        id: create_tag
+        run: |
+          TAG="v${{ env.VERSION }}"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add version.txt
+          git commit -m "ci: Update version.txt to $TAG"
+          git tag "$TAG"
+          git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/fdorantesm/aka.git
+          git push origin main --tags
+          echo "Tag $TAG created and pushed"
+          echo "tag=$TAG" >> $GITHUB_ENV
+      - name: Upload Release Asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: aka-linux
+          path: dist/aka-linux
+      - name: Upload Release Asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: aka-darwin
+          path: dist/aka-darwin
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.tag }}
+          token: ${{ secrets.GH_TOKEN }}
+          files: |
+            dist/aka-linux
+            dist/aka-darwin
