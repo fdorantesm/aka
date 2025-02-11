@@ -18,12 +18,38 @@ set -e
 #   source <(aka apply)
 #
 # If none of the known files are found, it will ask you to add them manually.
-#
-# NOTE: Update the AKA_URL variable below with the actual URL where your
-# binary is hosted (for example, for Linux/amd64).
 # ====================================
 
-AKA_URL="https://cdn.dorant.es/aka/bin/aka"
+# Determine the platform
+platform=$(uname -ms)
+
+# Determine the target based on the platform
+case $platform in
+'Darwin x86_64')
+    target=aka-darwin
+    ;;
+'Darwin arm64')
+    target=aka-darwin
+    ;;
+'Linux x86_64')
+    target=aka-linux
+    ;;
+'Linux aarch64' | 'Linux arm64')
+    target=aka-linux
+    ;;
+*)
+    echo "Unsupported platform: $platform"
+    exit 1
+    ;;
+esac
+
+# Get the latest version from GitHub releases
+VERSION=$(curl --silent "https://api.github.com/repos/fdorantesm/aka/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+# Construct the download URL
+GITHUB="https://github.com"
+github_repo="$GITHUB/fdorantesm/aka"
+AKA_URL="$github_repo/releases/download/$VERSION/$target"
 
 echo "Installing aka..."
 
@@ -48,7 +74,7 @@ else
 fi
 
 # Make the binary executable.
-chmod +x "$HOME/bin/aka"
+chmod a+x "$HOME/bin/aka"
 
 echo "aka was installed successfully to $HOME/bin/aka"
 echo ""
