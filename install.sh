@@ -23,7 +23,12 @@ set -e
 # binary is hosted (for example, for Linux/amd64).
 # ====================================
 
-AKA_URL="https://cdn.dorant.es/aka/bin/aka"
+VERSION="v1.0.2"
+if [ "$(uname)" = "Darwin" ]; then
+  AKA_URL="https://github.com/fdorantesm/aka/releases/download/$VERSION/aka-darwin"
+else
+  AKA_URL="https://github.com/fdorantesm/aka/releases/download/$VERSION/aka-linux"
+fi
 
 echo "Installing aka..."
 
@@ -48,7 +53,7 @@ else
 fi
 
 # Make the binary executable.
-chmod +x "$HOME/bin/aka"
+chmod a+x "$HOME/bin/aka"
 
 echo "aka was installed successfully to $HOME/bin/aka"
 echo ""

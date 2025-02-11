@@ -2,8 +2,8 @@
 
 build:
 	mkdir -p dist
-	# Read the AKA_VERSION value from .env and pass it to the compiledVersion variable via ldflags
-	VERSION=$(shell grep '^AKA_VERSION=' .env | cut -d '=' -f 2) && \
+	# Read the version value from version.txt and pass it to the compiledVersion variable via ldflags
+	VERSION=$(shell cat version.txt) && \
 	go build -ldflags "-X 'aka/src/cmd.compiledVersion=$$VERSION'" -o dist/aka ./src/main.go
 
 install:
