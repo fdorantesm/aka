@@ -11,6 +11,8 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(exportCmd)
+	rootCmd.AddCommand(importCmd)
 	rootCmd.AddCommand(applyCmd)
 	rootCmd.AddCommand(versionCmd)
 	cobra.CheckErr(rootCmd.Execute())

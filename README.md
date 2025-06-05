@@ -28,3 +28,16 @@ aka add ll "ls -la"
 ```bash
 aka list
 ```
+
+### Export aliases
+
+```bash
+aka export aliases.json
+```
+
+### Import aliases
+
+```bash
+aka import aliases.json
+```
+

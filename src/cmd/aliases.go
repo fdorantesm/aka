@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -68,6 +69,51 @@ func applyAliases(akaDir string) error {
 			}
 			cmd := strings.TrimSpace(string(content))
 			fmt.Printf("%s() {\n    %s\n}\n\n", aliasName, cmd)
+		}
+	}
+	return nil
+}
+
+func exportAliases(akaDir, outFile string) error {
+	entries, err := os.ReadDir(akaDir)
+	if err != nil {
+		return err
+	}
+	data := make(map[string]string)
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".alias") {
+			continue
+		}
+		aliasName := strings.TrimSuffix(entry.Name(), ".alias")
+		content, err := os.ReadFile(filepath.Join(akaDir, entry.Name()))
+		if err != nil {
+			return err
+		}
+		data[aliasName] = strings.TrimSpace(string(content))
+	}
+	jsonBytes, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		return err
+	}
+	if outFile == "" {
+		fmt.Println(string(jsonBytes))
+		return nil
+	}
+	return os.WriteFile(outFile, jsonBytes, 0644)
+}
+
+func importAliases(akaDir, inFile string) error {
+	content, err := os.ReadFile(inFile)
+	if err != nil {
+		return err
+	}
+	aliases := make(map[string]string)
+	if err := json.Unmarshal(content, &aliases); err != nil {
+		return err
+	}
+	for name, cmd := range aliases {
+		if err := addAlias(akaDir, name, cmd); err != nil {
+			return err
 		}
 	}
 	return nil
