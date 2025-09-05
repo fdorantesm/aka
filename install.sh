@@ -85,7 +85,7 @@ UPDATED=0
 
 for file in $CONFIG_FILES; do
   if [ -f "$file" ]; then
-    if ! grep -F "# Added by aka installer" "$file" >/dev/null 2>&1; then
+    if ! grep -F "source <(aka apply)" "$file" >/dev/null 2>&1; then
       cat <<'EOF' >> "$file"
 
 # Added by aka installer
