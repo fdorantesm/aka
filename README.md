@@ -8,6 +8,7 @@ To install `aka`, run the following command:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/fdorantesm/aka/refs/heads/main/install.sh | bash
+```
 
 ## Usage
 
@@ -27,4 +28,16 @@ aka add ll "ls -la"
 
 ```bash
 aka list
+```
+
+### Export aliases
+
+```bash
+aka export aliases.json
+```
+
+### Import aliases
+
+```bash
+aka import aliases.json
 ```
