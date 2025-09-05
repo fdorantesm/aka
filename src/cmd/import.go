@@ -26,7 +26,7 @@ var importCmd = &cobra.Command{
 		akaDir := getAkaDir()
 		for name, command := range aliases {
 			if err := addAlias(akaDir, name, command); err != nil {
-				fmt.Fprintln(os.Stderr, "Error writing alias:", err)
+				fmt.Fprintf(os.Stderr, "Error writing alias '%s': %v\n", name, err)
 				os.Exit(1)
 			}
 		}
