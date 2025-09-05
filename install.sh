@@ -85,12 +85,18 @@ UPDATED=0
 
 for file in $CONFIG_FILES; do
   if [ -f "$file" ]; then
-    echo "" >> "$file"
-    echo "# Added by aka installer" >> "$file"
-    echo 'export PATH="$HOME/bin:$PATH"' >> "$file"
-    echo 'source <(aka apply)' >> "$file"
-    echo "" >> "$file"
-    echo "Updated $file with the required lines."
+    if ! grep -F "# Added by aka installer" "$file" >/dev/null 2>&1; then
+      cat <<'EOF' >> "$file"
+
+# Added by aka installer
+export PATH="$HOME/bin:$PATH"
+source <(aka apply)
+
+EOF
+      echo "Updated $file with the required lines."
+    else
+      echo "aka configuration already present in $file. Skipping."
+    fi
     UPDATED=1
   fi
 done
@@ -99,8 +105,8 @@ if [ $UPDATED -eq 0 ]; then
   echo "No known shell configuration file found."
   echo "Please add the following lines manually to your shell profile:"
   echo ""
-  echo 'export PATH="$HOME/bin:$PATH"'
-  echo 'source <(aka apply)'
+  echo "export PATH=\"\$HOME/bin:\$PATH\""
+  echo "source <(aka apply)"
   echo ""
 fi
 
