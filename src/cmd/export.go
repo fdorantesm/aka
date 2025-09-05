@@ -27,7 +27,7 @@ var exportCmd = &cobra.Command{
 				aliasName := strings.TrimSuffix(entry.Name(), ".alias")
 				content, err := os.ReadFile(filepath.Join(akaDir, entry.Name()))
 				if err != nil {
-					fmt.Fprintln(os.Stderr, "Error reading alias:", err)
+					fmt.Fprintf(os.Stderr, "Error reading alias file %s: %v\n", entry.Name(), err)
 					os.Exit(1)
 				}
 				aliases[aliasName] = strings.TrimSpace(string(content))
