@@ -30,6 +30,12 @@ aka add ll "ls -la"
 aka list
 ```
 
+### Remove alias
+
+```bash
+aka remove ll
+```
+
 ### Export aliases
 
 ```bash

@@ -29,6 +29,17 @@ func addAlias(akaDir, aliasName, command string) error {
 	return os.WriteFile(filePath, []byte(command+"\n"), 0644)
 }
 
+func removeAlias(akaDir, aliasName string) error {
+	filePath := filepath.Join(akaDir, aliasName+".alias")
+	if _, err := os.Stat(filePath); err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("alias '%s' does not exist", aliasName)
+		}
+		return err
+	}
+	return os.Remove(filePath)
+}
+
 func listAliases(akaDir string) error {
 	entries, err := os.ReadDir(akaDir)
 	if err != nil {
