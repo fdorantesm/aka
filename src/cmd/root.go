@@ -10,6 +10,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	rootCmd.AddCommand(addCmd)
+	rootCmd.AddCommand(removeCmd)
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(applyCmd)
 	rootCmd.AddCommand(exportCmd)
