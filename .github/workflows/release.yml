@@ -6,6 +6,7 @@ on:
       - main
     paths-ignore:
       - version.txt
+      - "docs/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

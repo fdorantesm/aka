@@ -208,19 +208,7 @@
                 </div>
                 <span class="text-xs text-zinc-500 ml-3 font-mono">terminal</span>
               </div>
-              <pre class="text-xs sm:text-sm md:text-base leading-relaxed font-mono overflow-x-auto"><code><span class="text-green-400">$</span> aka add <span class="text-amber-400">"deploy"</span> <span class="text-amber-400">"npm run build && git push"</span>
-<span class="text-pink-400">✓</span> Alias <span class="text-cyan-400">'deploy'</span> added successfully
-
-<span class="text-green-400">$</span> aka list
-<span class="text-zinc-500">┌──────────┬────────────────────────────────┐</span>
-<span class="text-zinc-500">│</span> <span class="text-pink-400">Alias</span>    <span class="text-zinc-500">│</span> <span class="text-pink-400">Command</span>                        <span class="text-zinc-500">│</span>
-<span class="text-zinc-500">├──────────┼────────────────────────────────┤</span>
-<span class="text-zinc-500">│</span> deploy   <span class="text-zinc-500">│</span> npm run build && git push      <span class="text-zinc-500">│</span>
-<span class="text-zinc-500">│</span> dev      <span class="text-zinc-500">│</span> npm run dev                    <span class="text-zinc-500">│</span>
-<span class="text-zinc-500">└──────────┴────────────────────────────────┘</span>
-
-<span class="text-green-400">$</span> deploy
-<span class="text-violet-400">Running:</span> npm run build && git push...</code></pre>
+              <pre class="text-xs sm:text-sm md:text-base leading-relaxed font-mono overflow-x-auto min-h-[9rem]"><code id="terminal-code" aria-live="polite" role="status"></code></pre>
             </div>
           </div>
         </div>
@@ -439,5 +427,104 @@
         </div>
       </div>
     </footer>
+
+    <script>
+      (function(){
+        const el = document.getElementById('terminal-code');
+        if(!el) return;
+
+        const sequences = [
+          {
+            cmd: 'aka add "deploy" "npm run build && git push"',
+            output: '<span class="text-pink-400">✓</span> Alias <span class="text-cyan-400">\'deploy\'</span> added successfully'
+          },
+          {
+            cmd: 'aka list',
+            output: '<span class="text-zinc-500">┌──────────┬────────────────────────────────┐</span>\n<span class="text-zinc-500">│</span> <span class="text-pink-400">Alias</span>    <span class="text-zinc-500">│</span> <span class="text-pink-400">Command</span>                        <span class="text-zinc-500">│</span>\n<span class="text-zinc-500">├──────────┼────────────────────────────────┤</span>\n<span class="text-zinc-500">│</span> deploy   <span class="text-zinc-500">│</span> npm run build && git push      <span class="text-zinc-500">│</span>\n<span class="text-zinc-500">│</span> dev      <span class="text-zinc-500">│</span> npm run dev                    <span class="text-zinc-500">│</span>\n<span class="text-zinc-500">└──────────┴────────────────────────────────┘</span>'
+          },
+          {
+            cmd: 'deploy',
+            output: '<span class="text-violet-400">Running:</span> npm run build && git push...'
+          }
+        ];
+
+        const typeSpeed = 18;
+        const pause = 800;
+        const clearSpeed = 6;
+
+        function isVisible(e){
+          return window.getComputedStyle(e).display !== 'none' && e.offsetParent !== null;
+        }
+
+        function typeCommand(text, cb){
+          const line = document.createElement('div');
+          line.innerHTML = '<span class="text-green-400">$</span> <span class="typing"></span>';
+          el.appendChild(line);
+          const target = line.querySelector('.typing');
+          let idx = 0;
+          function step(){
+            if(idx < text.length){
+              target.textContent += text[idx++];
+              el.scrollTop = el.scrollHeight;
+              setTimeout(step, typeSpeed);
+            } else {
+              cb();
+            }
+          }
+          step();
+        }
+
+        function showOutput(html, cb){
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = html;
+          el.appendChild(wrapper);
+          el.scrollTop = el.scrollHeight;
+          setTimeout(cb, pause);
+        }
+
+        function clearAll(cb){
+          setTimeout(function(){
+            el.style.opacity = '0';
+            setTimeout(function(){
+              el.innerHTML = '';
+              el.style.opacity = '1';
+              cb();
+            }, 150);
+          }, pause);
+        }
+
+        function play(){
+          let i = 0;
+          el.innerHTML = '';
+          function next(){
+            if(i >= sequences.length){
+              setTimeout(()=>{
+                i = 0;
+                el.innerHTML = '';
+                next();
+              }, 1500);
+              return;
+            }
+            const seq = sequences[i++];
+            typeCommand(seq.cmd, function(){
+              el.appendChild(document.createTextNode('\n'));
+              showOutput(seq.output, function(){
+                clearAll(next);
+              });
+            });
+          }
+          next();
+        }
+
+        function startIfVisible(){
+          if(isVisible(el)) play();
+        }
+
+        window.addEventListener('resize', startIfVisible);
+        // Also restart when page becomes visible (tab focus)
+        document.addEventListener('visibilitychange', function(){ if(!document.hidden) startIfVisible(); });
+        startIfVisible();
+      })();
+    </script>
   </body>
 </html>
