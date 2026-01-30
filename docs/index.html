@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>aka — Lightweight CLI Documentation</title>
+    <meta name="description" content="aka is a powerful CLI tool for managing aliases and shortcuts. Fast, portable, and developer-friendly." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script>
+      // Dark mode with system preference
+      if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.classList.remove('dark')
+      } else {
+        document.documentElement.classList.add('dark')
+      }
+      
+      function toggleTheme() {
+        if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark')
+          localStorage.theme = 'light'
+        } else {
+          document.documentElement.classList.add('dark')
+          localStorage.theme = 'dark'
+        }
+      }
+
+      function copyInstall() {
+        const cmd = 'curl -fsSL https://raw.githubusercontent.com/fdorantesm/aka/refs/heads/main/install.sh | bash'
+        navigator.clipboard.writeText(cmd).then(() => {
+          const btn = document.getElementById('copy-btn')
+          const icon = document.getElementById('copy-icon')
+          const check = document.getElementById('check-icon')
+          icon.classList.add('hidden')
+          check.classList.remove('hidden')
+          setTimeout(() => {
+            icon.classList.remove('hidden')
+            check.classList.add('hidden')
+          }, 2000)
+        })
+      }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#0ea5e9',
+              'primary-600': '#0284c7',
+              'primary-700': '#0369a1',
+            },
+            fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+            animation: {
+              'float': 'float 6s ease-in-out infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-20px)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      html, body { overflow-x: hidden; min-width: 320px; }
+      .content { max-width: 1280px; width: 100%; box-sizing: border-box; }
+      .gradient-text {
+        background: linear-gradient(135deg, #f472b6 0%, #fb923c 50%, #facc15 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .gradient-text-blue {
+        background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+      }
+      .dark .glass-card {
+        background: rgba(24, 24, 27, 0.8);
+        border: 1px solid rgba(63, 63, 70, 0.5);
+      }
+      .light .glass-card, .glass-card {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 dark:bg-zinc-950 text-slate-800 dark:text-zinc-100 antialiased font-sans overflow-x-hidden transition-colors">
+    <!-- Animated Background -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 left-0 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-pink-500 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 dark:opacity-30 animate-float"></div>
+      <div class="absolute top-0 right-0 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-violet-500 dark:bg-violet-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 dark:opacity-30 animate-float" style="animation-delay: 2s;"></div>
+      <div class="absolute -bottom-32 left-4 sm:left-10 md:left-20 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-orange-400 dark:bg-orange-500 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 dark:opacity-30 animate-float" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 border-b border-slate-200 dark:border-zinc-800 z-50">
+      <div class="mx-auto content px-3 sm:px-8 py-3 sm:py-4 flex items-center justify-between">
+        <a href="./" class="flex items-center gap-3 group">
+          <div class="relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-pink-500 to-violet-600 rounded-xl blur opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="relative">
+              <rect width="24" height="24" rx="6" fill="url(#logo-gradient)" />
+              <path d="M7 12h10M7 9h6M7 15h8" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="logo-gradient" x1="0" y1="0" x2="24" y2="24">
+                  <stop offset="0%" stop-color="#ec4899"/>
+                  <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-xl font-black leading-5">aka</h1>
+          </div>
+        </a>
+        <!-- Mobile buttons -->
+        <div class="flex items-center gap-2 md:hidden">
+          <button onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 transition-colors">
+            <svg class="w-5 h-5 hidden dark:block text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg class="w-5 h-5 block dark:hidden text-slate-700" fill="currentColor" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+          <a href="https://github.com/fdorantesm/aka" target="_blank" class="p-2 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 transition-colors">
+            <svg class="w-5 h-5 text-slate-700 dark:text-zinc-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </a>
+        </div>
+        <!-- Desktop nav -->
+        <nav class="space-x-8 text-sm font-medium hidden md:flex items-center">
+          <a href="#features" class="text-slate-600 dark:text-zinc-400 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Features</a>
+          <a href="#commands" class="text-slate-600 dark:text-zinc-400 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Commands</a>
+          <a href="https://github.com/fdorantesm/aka#readme" target="_blank" class="text-slate-600 dark:text-zinc-400 hover:text-pink-500 dark:hover:text-pink-400 transition-colors">Docs</a>
+          <!-- Theme Toggle -->
+          <button onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 transition-colors">
+            <svg class="w-5 h-5 hidden dark:block text-yellow-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg class="w-5 h-5 block dark:hidden text-slate-700" fill="currentColor" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+          <a href="https://github.com/fdorantesm/aka" target="_blank" class="inline-flex items-center gap-2 bg-zinc-900 dark:bg-white hover:bg-zinc-800 dark:hover:bg-zinc-100 text-white dark:text-zinc-900 px-5 py-2.5 rounded-xl transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto content px-3 sm:px-8 overflow-hidden">
+      <!-- Hero Section -->
+      <section class="py-8 sm:py-20 lg:py-28">
+        <div class="grid lg:grid-cols-2 gap-6 sm:gap-12 lg:gap-16 items-center">
+          <!-- Left: Text Content -->
+          <div class="text-center lg:text-left">
+            <div class="inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-pink-500/10 to-violet-500/10 dark:from-pink-500/20 dark:to-violet-500/20 border border-pink-500/20 dark:border-pink-500/30 rounded-full px-2.5 sm:px-5 py-1.5 sm:py-2.5 text-[10px] sm:text-sm font-semibold text-pink-600 dark:text-pink-400 mb-4 sm:mb-8">
+              <svg class="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <span>Blazing Fast CLI Tool</span>
+            </div>
+            
+            <h2 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-[1.1] mb-3 sm:mb-6">
+              Master your aliases with <span class=\"gradient-text\">aka</span>
+            </h2>
+            
+            <p class="text-sm sm:text-lg md:text-xl text-slate-600 dark:text-zinc-400 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-4 sm:mb-6">
+              A powerful, lightweight CLI tool for managing aliases and command shortcuts. 
+              Streamline your workflow and boost productivity.
+            </p>
+
+            <!-- Install Command -->
+            <div class="bg-zinc-900 text-zinc-100 rounded-lg sm:rounded-xl p-2.5 sm:p-4 font-mono text-[10px] sm:text-sm mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0 flex items-start sm:items-center gap-2">
+              <code class="flex-1 overflow-hidden leading-relaxed"><span class="text-green-400">$</span> <span class="break-all">curl -fsSL https://raw.githubusercontent.com/fdorantesm/aka/refs/heads/main/install.sh | bash</span></code>
+              <button id="copy-btn" onclick="copyInstall()" class="flex-shrink-0 p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition-colors" title="Copy to clipboard">
+                <svg id="copy-icon" class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                <svg id="check-icon" class="w-4 h-4 text-green-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
+              <a href="#commands" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-violet-600 hover:from-pink-600 hover:to-violet-700 text-white px-5 sm:px-8 py-2.5 sm:py-4 rounded-xl font-semibold shadow-lg shadow-pink-500/25 hover:shadow-xl hover:shadow-pink-500/30 transition-all text-sm sm:text-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Get Started
+              </a>
+              <a href="#commands" class="inline-flex items-center justify-center gap-2 border-2 border-slate-300 dark:border-zinc-700 hover:border-pink-500 dark:hover:border-pink-500 px-5 sm:px-8 py-2.5 sm:py-4 rounded-xl text-slate-700 dark:text-zinc-300 hover:text-pink-500 dark:hover:text-pink-400 font-semibold transition-all text-sm sm:text-lg">
+                View Commands
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right: Terminal Preview -->
+          <div class="relative hidden sm:block">
+            <div class="absolute -inset-4 bg-gradient-to-r from-pink-500/20 via-violet-500/20 to-cyan-500/20 blur-3xl rounded-3xl"></div>
+            <div class="relative bg-zinc-900 text-zinc-100 rounded-2xl p-4 sm:p-6 shadow-2xl shadow-black/30 border border-zinc-800 overflow-hidden">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="flex gap-2">
+                  <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <span class="text-xs text-zinc-500 ml-3 font-mono">terminal</span>
+              </div>
+              <pre class="text-xs sm:text-sm md:text-base leading-relaxed font-mono overflow-x-auto"><code><span class="text-green-400">$</span> aka add <span class="text-amber-400">"deploy"</span> <span class="text-amber-400">"npm run build && git push"</span>
+<span class="text-pink-400">✓</span> Alias <span class="text-cyan-400">'deploy'</span> added successfully
+
+<span class="text-green-400">$</span> aka list
+<span class="text-zinc-500">┌──────────┬────────────────────────────────┐</span>
+<span class="text-zinc-500">│</span> <span class="text-pink-400">Alias</span>    <span class="text-zinc-500">│</span> <span class="text-pink-400">Command</span>                        <span class="text-zinc-500">│</span>
+<span class="text-zinc-500">├──────────┼────────────────────────────────┤</span>
+<span class="text-zinc-500">│</span> deploy   <span class="text-zinc-500">│</span> npm run build && git push      <span class="text-zinc-500">│</span>
+<span class="text-zinc-500">│</span> dev      <span class="text-zinc-500">│</span> npm run dev                    <span class="text-zinc-500">│</span>
+<span class="text-zinc-500">└──────────┴────────────────────────────────┘</span>
+
+<span class="text-green-400">$</span> deploy
+<span class="text-violet-400">Running:</span> npm run build && git push...</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section id="features" class="py-10 sm:py-16">
+        <div class="text-center mb-8 sm:mb-16">
+          <h3 class="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-5">Why <span class="gradient-text">you will</span> love <span class="gradient-text">aka</span></h3>
+          <p class="text-base sm:text-xl text-slate-600 dark:text-zinc-400 max-w-2xl mx-auto px-2">Powerful features designed to make your command-line experience seamless and efficient.</p>
+        </div>
+        
+        <div class="grid gap-3 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="bg-white dark:bg-zinc-900/80 p-4 sm:p-6 rounded-xl sm:rounded-2xl card-hover border border-slate-100 dark:border-zinc-800">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-500/20 to-pink-500/10 dark:from-pink-500/30 dark:to-pink-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-5">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <h4 class="font-bold text-base sm:text-lg mb-1.5 sm:mb-2">Lightning Fast</h4>
+            <p class="text-slate-600 dark:text-zinc-400 leading-relaxed text-xs sm:text-sm">Execute commands instantly with optimized performance.</p>
+          </div>
+
+          <div class="bg-white dark:bg-zinc-900/80 p-4 sm:p-6 rounded-xl sm:rounded-2xl card-hover border border-slate-100 dark:border-zinc-800">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-violet-500/20 to-violet-500/10 dark:from-violet-500/30 dark:to-violet-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-5">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01"/></svg>
+            </div>
+            <h4 class="font-bold text-base sm:text-lg mb-1.5 sm:mb-2">Smart Aliases</h4>
+            <p class="text-slate-600 dark:text-zinc-400 leading-relaxed text-xs sm:text-sm">Create intelligent shortcuts for your most-used commands.</p>
+          </div>
+
+          <div class="bg-white dark:bg-zinc-900/80 p-4 sm:p-6 rounded-xl sm:rounded-2xl card-hover border border-slate-100 dark:border-zinc-800">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 dark:from-cyan-500/30 dark:to-cyan-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-5">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </div>
+            <h4 class="font-bold text-base sm:text-lg mb-1.5 sm:mb-2">Import/Export</h4>
+            <p class="text-slate-600 dark:text-zinc-400 leading-relaxed text-xs sm:text-sm">Share configurations across machines and teams.</p>
+          </div>
+
+          <div class="bg-white dark:bg-zinc-900/80 p-4 sm:p-6 rounded-xl sm:rounded-2xl card-hover border border-slate-100 dark:border-zinc-800">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-500/20 to-amber-500/10 dark:from-amber-500/30 dark:to-amber-500/10 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-5">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h4 class="font-bold text-base sm:text-lg mb-1.5 sm:mb-2">Developer-Friendly</h4>
+            <p class="text-slate-600 dark:text-zinc-400 leading-relaxed text-xs sm:text-sm">Intuitive commands and docs for all skill levels.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Commands Section -->
+      <section id="commands" class="py-10 sm:py-16">
+        <div class="text-center mb-8 sm:mb-16">
+          <h3 class="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-5">Complete <span class="gradient-text">Command</span> Reference</h3>
+          <p class="text-base sm:text-xl text-slate-600 dark:text-zinc-400 max-w-2xl mx-auto px-2">All 7 commands at your fingertips to master alias management.</p>
+        </div>
+        
+        <div class="grid gap-2.5 sm:gap-4 grid-cols-1 md:grid-cols-2">
+          <div class="glass-card bg-white dark:bg-zinc-900/60 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-zinc-800 card-hover">
+            <div class="flex items-center gap-2.5 sm:gap-4 mb-1.5 sm:mb-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+              </div>
+              <code class="text-sm sm:text-lg font-bold text-pink-600 dark:text-pink-400">aka add</code>
+            </div>
+            <p class="text-xs sm:text-base text-slate-600 dark:text-zinc-400">Add a new alias. <span class="text-slate-500 dark:text-zinc-500 hidden sm:inline">Example: aka add gs "git status"</span></p>
+          </div>
+
+          <div class="glass-card bg-white dark:bg-zinc-900/60 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-zinc-800 card-hover">
+            <div class="flex items-center gap-2.5 sm:gap-4 mb-1.5 sm:mb-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              </div>
+              <code class="text-sm sm:text-lg font-bold text-indigo-600 dark:text-indigo-400">aka list [pattern]</code>
+            </div>
+            <p class="text-xs sm:text-base text-slate-600 dark:text-zinc-400">List aliases with filter. <span class="text-slate-500 dark:text-zinc-500 hidden sm:inline">Example: aka list '*dev*'</span></p>
+          </div>
+
+          <div class="glass-card bg-white dark:bg-zinc-900/60 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-zinc-800 card-hover">
+            <div class="flex items-center gap-2.5 sm:gap-4 mb-1.5 sm:mb-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-violet-500 to-violet-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <code class="text-sm sm:text-lg font-bold text-violet-600 dark:text-violet-400">aka apply</code>
+            </div>
+            <p class="text-xs sm:text-base text-slate-600 dark:text-zinc-400">Apply aliases to your shell config.</p>
+          </div>
+
+          <div class="glass-card bg-white dark:bg-zinc-900/60 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-zinc-800 card-hover">
+            <div class="flex items-center gap-2.5 sm:gap-4 mb-1.5 sm:mb-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              </div>
+              <code class="text-sm sm:text-lg font-bold text-emerald-600 dark:text-emerald-400">aka export</code>
+            </div>
+            <p class="text-xs sm:text-base text-slate-600 dark:text-zinc-400">Export aliases to a file for backup.</p>
+          </div>
+
+          <div class="glass-card bg-white dark:bg-zinc-900/60 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-zinc-800 card-hover">
+            <div class="flex items-center gap-2.5 sm:gap-4 mb-1.5 sm:mb-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              </div>
+              <code class="text-sm sm:text-lg font-bold text-blue-600 dark:text-blue-400">aka import</code>
+            </div>
+            <p class="text-xs sm:text-base text-slate-600 dark:text-zinc-400">Import aliases from an external file.</p>
+          </div>
+
+          <div class="glass-card bg-white dark:bg-zinc-900/60 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-zinc-800 card-hover">
+            <div class="flex items-center gap-2.5 sm:gap-4 mb-1.5 sm:mb-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </div>
+              <code class="text-sm sm:text-lg font-bold text-red-600 dark:text-red-400">aka remove</code>
+            </div>
+            <p class="text-xs sm:text-base text-slate-600 dark:text-zinc-400">Remove an existing alias by name.</p>
+          </div>
+
+          <div class="glass-card bg-white dark:bg-zinc-900/60 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-zinc-800 card-hover">
+            <div class="flex items-center gap-2.5 sm:gap-4 mb-1.5 sm:mb-3">
+              <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-slate-500 to-slate-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+              </div>
+              <code class="text-sm sm:text-lg font-bold text-slate-600 dark:text-slate-400">aka version</code>
+            </div>
+            <p class="text-xs sm:text-base text-slate-600 dark:text-zinc-400">Show the current version of aka.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="py-10 sm:py-16">
+        <div class="relative overflow-hidden rounded-xl sm:rounded-3xl">
+          <div class="absolute inset-0 bg-gradient-to-br from-pink-500 via-violet-600 to-cyan-500"></div>
+          <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+          
+          <div class="relative px-4 sm:px-10 py-10 sm:py-20 text-center">
+            <h3 class="text-xl sm:text-4xl md:text-5xl font-black text-white mb-3 sm:mb-5">Ready to boost your productivity?</h3>
+            <p class="text-sm sm:text-xl text-white/90 mb-6 sm:mb-10 max-w-2xl mx-auto">Join developers worldwide who are streamlining their workflows with aka.</p>
+            
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-5 justify-center">
+              <a href="https://github.com/fdorantesm/aka#readme" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white text-violet-600 hover:bg-slate-50 px-5 sm:px-8 py-2.5 sm:py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all text-sm sm:text-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                Read the Docs
+              </a>
+              <a href="https://github.com/fdorantesm/aka" target="_blank" class="inline-flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-5 sm:px-8 py-2.5 sm:py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all text-sm sm:text-lg">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                Star on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Links -->
+      <section class="py-10 sm:py-16 mb-6 sm:mb-8">
+        <div class="bg-white dark:bg-zinc-900/60 rounded-xl sm:rounded-3xl p-4 sm:p-10 border border-slate-200 dark:border-zinc-800">
+          <h3 class="text-xl sm:text-3xl font-bold mb-4 sm:mb-8">Quick Links</h3>
+          <div class="grid gap-2.5 sm:gap-6 grid-cols-1 md:grid-cols-3">
+            <a href="https://github.com/fdorantesm/aka#readme" target="_blank" class="flex items-center gap-2.5 sm:gap-4 p-3 sm:p-5 rounded-xl hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors group border border-slate-100 dark:border-zinc-800">
+              <div class="w-10 h-10 sm:w-14 sm:h-14 bg-pink-500/10 dark:bg-pink-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:bg-pink-500/20 dark:group-hover:bg-pink-500/30 transition-colors flex-shrink-0">
+                <svg class="w-5 h-5 sm:w-7 sm:h-7 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold text-sm sm:text-lg">Documentation</div>
+                <div class="text-xs sm:text-sm text-slate-500 dark:text-zinc-500">Full project README</div>
+              </div>
+            </a>
+            
+            <a href="https://github.com/fdorantesm/aka/releases" target="_blank" class="flex items-center gap-2.5 sm:gap-4 p-3 sm:p-5 rounded-xl hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors group border border-slate-100 dark:border-zinc-800">
+              <div class="w-10 h-10 sm:w-14 sm:h-14 bg-violet-500/10 dark:bg-violet-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:bg-violet-500/20 dark:group-hover:bg-violet-500/30 transition-colors flex-shrink-0">
+                <svg class="w-5 h-5 sm:w-7 sm:h-7 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold text-sm sm:text-lg">Releases</div>
+                <div class="text-xs sm:text-sm text-slate-500 dark:text-zinc-500">Download latest version</div>
+              </div>
+            </a>
+            
+            <a href="https://github.com/fdorantesm/aka" target="_blank" class="flex items-center gap-2.5 sm:gap-4 p-3 sm:p-5 rounded-xl hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors group border border-slate-100 dark:border-zinc-800">
+              <div class="w-10 h-10 sm:w-14 sm:h-14 bg-zinc-500/10 dark:bg-zinc-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:bg-zinc-500/20 dark:group-hover:bg-zinc-500/30 transition-colors flex-shrink-0">
+                <svg class="w-5 h-5 sm:w-7 sm:h-7 text-zinc-600 dark:text-zinc-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold text-sm sm:text-lg">GitHub Repository</div>
+                <div class="text-xs sm:text-sm text-slate-500 dark:text-zinc-500">Source code & issues</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+      <div class="mx-auto content px-3 sm:px-8 py-8 sm:py-10">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+          <div class="flex items-center gap-4">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="24" height="24" rx="6" fill="url(#footer-gradient)" />
+              <path d="M7 12h10M7 9h6M7 15h8" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="footer-gradient" x1="0" y1="0" x2="24" y2="24">
+                  <stop offset="0%" stop-color="#ec4899"/>
+                  <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div>
+              <div class="font-bold text-lg">aka</div>
+              <div class="text-sm text-slate-500 dark:text-zinc-500">Lightweight CLI Tool</div>
+            </div>
+          </div>
+          
+          <div class="text-sm text-slate-500 dark:text-zinc-500 text-center md:text-right">
+            <p class="text-xs mt-1">Created by <a href="mailto:fernando@dorant.es">Fernando Dorantes</a> </p>
+            <p class="text-xs mt-1">Powered by Tailwind CSS</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

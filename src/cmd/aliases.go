@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"text/tabwriter"
 )
 
 func getAkaDir() string {
@@ -40,26 +39,120 @@ func removeAlias(akaDir, aliasName string) error {
 	return os.Remove(filePath)
 }
 
-func listAliases(akaDir string) error {
+func listAliases(akaDir string, pattern string) error {
 	entries, err := os.ReadDir(akaDir)
 	if err != nil {
 		return err
 	}
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-	fmt.Fprintln(w, "ALIAS\tCOMMAND")
-	fmt.Fprintln(w, "-----\t-------")
+
+	// Collect aliases
+	type alias struct {
+		name string
+		cmd  string
+	}
+	var aliases []alias
+	maxNameLen := 5 // minimum "ALIAS"
+
 	for _, entry := range entries {
 		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".alias") {
 			aliasName := strings.TrimSuffix(entry.Name(), ".alias")
+			
+			// Filter by pattern if provided
+			if pattern != "" {
+				matched, err := filepath.Match(pattern, aliasName)
+				if err != nil {
+					return fmt.Errorf("invalid pattern '%s': %w", pattern, err)
+				}
+				if !matched {
+					continue
+				}
+			}
+			
 			content, err := os.ReadFile(filepath.Join(akaDir, entry.Name()))
 			if err != nil {
 				return err
 			}
 			cmdStr := strings.TrimSpace(string(content))
-			fmt.Fprintf(w, "%s\t%s\n", aliasName, cmdStr)
+			aliases = append(aliases, alias{name: aliasName, cmd: cmdStr})
+			if len(aliasName) > maxNameLen {
+				maxNameLen = len(aliasName)
+			}
 		}
 	}
-	w.Flush()
+
+	// Handle no results
+	if len(aliases) == 0 {
+		if pattern != "" {
+			fmt.Printf("No aliases found matching '%s'\n", pattern)
+		} else {
+			fmt.Println("No aliases found")
+		}
+		return nil
+	}
+
+	// Fixed width for command column (fits most terminals)
+	maxCmdLen := 70
+
+	// Helper function to wrap text
+	wrapText := func(text string, width int) []string {
+		var result []string
+		// First split by newlines to preserve intentional line breaks
+		lines := strings.Split(text, "\n")
+		for _, line := range lines {
+			if len(line) <= width {
+				result = append(result, line)
+			} else {
+				// Wrap long lines
+				for len(line) > width {
+					// Try to break at a space
+					breakPoint := width
+					for i := width; i > width/2; i-- {
+						if line[i] == ' ' {
+							breakPoint = i
+							break
+						}
+					}
+					result = append(result, line[:breakPoint])
+					line = line[breakPoint:]
+					if len(line) > 0 && line[0] == ' ' {
+						line = line[1:]
+					}
+				}
+				if len(line) > 0 {
+					result = append(result, line)
+				}
+			}
+		}
+		return result
+	}
+
+	// Print table
+	topBorder := "┌" + strings.Repeat("─", maxNameLen+2) + "┬" + strings.Repeat("─", maxCmdLen+2) + "┐"
+	headerSep := "├" + strings.Repeat("─", maxNameLen+2) + "┼" + strings.Repeat("─", maxCmdLen+2) + "┤"
+	rowSep := "├" + strings.Repeat("─", maxNameLen+2) + "┼" + strings.Repeat("─", maxCmdLen+2) + "┤"
+	bottomBorder := "└" + strings.Repeat("─", maxNameLen+2) + "┴" + strings.Repeat("─", maxCmdLen+2) + "┘"
+
+	fmt.Println(topBorder)
+	fmt.Printf("│ \033[1m%-*s\033[0m │ \033[1m%-*s\033[0m │\n", maxNameLen, "ALIAS", maxCmdLen, "COMMAND")
+	fmt.Println(headerSep)
+
+	for i, a := range aliases {
+		wrappedLines := wrapText(a.cmd, maxCmdLen)
+		for j, line := range wrappedLines {
+			if j == 0 {
+				// First line: show alias name
+				fmt.Printf("│ \033[36m%-*s\033[0m │ %-*s │\n", maxNameLen, a.name, maxCmdLen, line)
+			} else {
+				// Continuation lines: empty alias column
+				fmt.Printf("│ %-*s │ %-*s │\n", maxNameLen, "", maxCmdLen, line)
+			}
+		}
+		// Row separator (except for last row)
+		if i < len(aliases)-1 {
+			fmt.Println(rowSep)
+		}
+	}
+	fmt.Println(bottomBorder)
 	return nil
 }
 

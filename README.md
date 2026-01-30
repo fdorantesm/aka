@@ -26,8 +26,18 @@ aka add ll "ls -la"
 
 ### List
 
+List all aliases:
+
 ```bash
 aka list
+```
+
+Filter aliases with glob patterns:
+
+```bash
+aka list '*dev*'    # Aliases containing "dev"
+aka list 'aws*'     # Aliases starting with "aws"
+aka list '*-qa'     # Aliases ending with "-qa"
 ```
 
 ### Remove alias
