@@ -9,7 +9,7 @@ const binaryPath = path.join(__dirname, "aka");
 // Check if binary exists
 if (!fs.existsSync(binaryPath)) {
   console.error("❌ The aka binary was not installed correctly.");
-  console.error("Please try reinstalling: npm install -g aka-cli");
+  console.error("Please try reinstalling: npm install -g aka-installer");
   process.exit(1);
 }
 

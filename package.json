@@ -1,5 +1,5 @@
 {
-  "name": "aka-cli",
+  "name": "aka-installer",
   "version": "1.0.23",
   "description": "A simple alias manager that lets you add, list, and apply command aliases",
   "main": "index.js",

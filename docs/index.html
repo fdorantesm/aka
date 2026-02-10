@@ -29,11 +29,11 @@
       let activeInstallTab = 'curl';
       const installCommands = {
         curl: 'curl -fsSL https://raw.githubusercontent.com/fdorantesm/aka/refs/heads/main/install.sh | bash',
-        npm: 'npm install -g aka-cli',
-        yarn: 'yarn global add aka-cli',
-        pnpm: 'pnpm add -g aka-cli',
-        bun: 'bun add -g aka-cli',
-        deno: 'deno install -A -n aka npm:aka-cli',
+        npx: 'npx aka-installer',
+        yarn: 'yarn dlx aka-installer',
+        pnpm: 'pnpm dlx aka-installer',
+        bunx: 'bunx aka-installer',
+        deno: 'deno run -A npm:aka-installer',
       };
 
       function setInstallTab(tab) {
@@ -208,8 +208,8 @@
                 <button onclick="setInstallTab('curl')" data-install-tab="curl" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-gradient-to-r from-pink-500 to-violet-600 text-white">
                   curl
                 </button>
-                <button onclick="setInstallTab('npm')" data-install-tab="npm" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-zinc-400 hover:text-pink-500">
-                  npm
+                <button onclick="setInstallTab('npx')" data-install-tab="npx" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-zinc-400 hover:text-pink-500">
+                  npx
                 </button>
                 <button onclick="setInstallTab('yarn')" data-install-tab="yarn" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-zinc-400 hover:text-pink-500">
                   yarn
@@ -217,8 +217,8 @@
                 <button onclick="setInstallTab('pnpm')" data-install-tab="pnpm" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-zinc-400 hover:text-pink-500">
                   pnpm
                 </button>
-                <button onclick="setInstallTab('bun')" data-install-tab="bun" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-zinc-400 hover:text-pink-500">
-                  bun
+                <button onclick="setInstallTab('bunx')" data-install-tab="bunx" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-zinc-400 hover:text-pink-500">
+                  bunx
                 </button>
                 <button onclick="setInstallTab('deno')" data-install-tab="deno" class="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-zinc-400 hover:text-pink-500">
                   deno
