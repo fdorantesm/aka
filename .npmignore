@@ -20,3 +20,7 @@ install.sh
 
 # Version control
 version.txt
+
+# Binaries (will be downloaded by postinstall)
+bin/aka
+!bin/.gitkeep

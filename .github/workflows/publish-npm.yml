@@ -1,0 +1,63 @@
+name: Publish to npm
+
+on:
+    workflow_dispatch:
+        inputs:
+            npm_tag:
+                description: "npm tag (latest, beta, next, etc.)"
+                required: false
+                default: "latest"
+                type: choice
+                options:
+                    - latest
+                    - beta
+                    - next
+                    - canary
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+                  registry-url: "https://registry.npmjs.org"
+
+            - name: Verify package.json exists
+              run: |
+                  if [ ! -f package.json ]; then
+                    echo "Error: package.json not found"
+                    exit 1
+                  fi
+
+            - name: Get package version
+              id: package_version
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  echo "VERSION=$VERSION" >> $GITHUB_ENV
+                  echo "Publishing version: $VERSION"
+
+            - name: Publish to npm
+              run: npm publish --access public --tag ${{ inputs.npm_tag }} --provenance
+
+            - name: Create deployment summary
+              run: |
+                  echo "## 📦 npm Package Published" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Package:** aka-cli" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Version:** ${{ env.VERSION }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Tag:** ${{ inputs.npm_tag }}" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "Install with:" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install -g aka-cli" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

@@ -30,8 +30,9 @@
     "url": "https://github.com/fdorantesm/aka/issues"
   },
   "files": [
-    "bin/",
+    "bin/.gitkeep",
     "scripts/",
+    "index.js",
     "README.md"
   ],
   "os": [
