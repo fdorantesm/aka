@@ -4,10 +4,46 @@ A simple alias manager that lets you add, list, and apply command aliases.
 
 ## Installation
 
-To install `aka`, run the following command:
+### Using curl (recommended)
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/fdorantesm/aka/refs/heads/main/install.sh | bash
+```
+
+### Using npm
+
+```sh
+npm install -g aka-cli
+```
+
+### Using yarn
+
+```sh
+yarn global add aka-cli
+```
+
+### Using pnpm
+
+```sh
+pnpm add -g aka-cli
+```
+
+### Using bun
+
+```sh
+bun add -g aka-cli
+```
+
+### Using deno
+
+```sh
+deno install -A -n aka npm:aka-cli
+```
+
+### Using npmx.dev
+
+```sh
+npmx aka-cli
 ```
 
 ## Usage

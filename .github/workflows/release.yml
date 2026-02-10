@@ -68,6 +68,11 @@ jobs:
           GOOS=darwin GOARCH=amd64 go build -ldflags "-X aka/src/cmd.compiledVersion=$VERSION" -o dist/aka-darwin ./src/main.go
       - name: Generate version.txt
         run: echo "${{ env.VERSION }}" > version.txt
+      - name: Update package.json version
+        run: |
+          if [ -f package.json ]; then
+            node -e "const pkg=require('./package.json'); pkg.version='${{ env.VERSION }}'; require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');"
+          fi
       - name: Create Tag
         id: create_tag
         run: |
@@ -75,7 +80,10 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add version.txt
-          git commit -m "ci: Update version.txt to $TAG"
+          if [ -f package.json ]; then
+            git add package.json
+          fi
+          git commit -m "ci: Update version to $TAG"
           git tag "$TAG"
           git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/fdorantesm/aka.git
           git push origin main --tags

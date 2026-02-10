@@ -1,0 +1,22 @@
+# Development files
+.git/
+.github/
+.gitignore
+
+# Go files
+src/
+go.mod
+go.sum
+Makefile
+
+# Documentation (keep README.md)
+docs/
+
+# Build artifacts
+dist/
+
+# Installation script
+install.sh
+
+# Version control
+version.txt

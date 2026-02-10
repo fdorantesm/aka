@@ -1,0 +1,44 @@
+{
+  "name": "aka-cli",
+  "version": "1.0.13",
+  "description": "A simple alias manager that lets you add, list, and apply command aliases",
+  "main": "index.js",
+  "bin": {
+    "aka": "./bin/aka"
+  },
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "keywords": [
+    "alias",
+    "cli",
+    "command-line",
+    "productivity",
+    "aliases",
+    "shell",
+    "bash",
+    "zsh"
+  ],
+  "author": "Fernando Dorantes",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fdorantesm/aka.git"
+  },
+  "homepage": "https://github.com/fdorantesm/aka#readme",
+  "bugs": {
+    "url": "https://github.com/fdorantesm/aka/issues"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "README.md"
+  ],
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "engines": {
+    "node": ">=14"
+  }
+}
