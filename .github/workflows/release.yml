@@ -83,7 +83,7 @@ jobs:
           if [ -f package.json ]; then
             git add package.json
           fi
-          git commit -m "ci: Update version to $TAG"
+          git commit -m "ci: Update version to $TAG [skip ci]"
           git tag "$TAG"
           git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/fdorantesm/aka.git
           git push origin main --tags
