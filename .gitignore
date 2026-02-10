@@ -7,3 +7,6 @@ dist
 # npm
 node_modules/
 *.tgz
+
+# Binaries (built by CI, not committed)
+bin/aka

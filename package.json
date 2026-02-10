@@ -4,7 +4,7 @@
   "description": "A simple alias manager that lets you add, list, and apply command aliases",
   "main": "index.js",
   "bin": {
-    "aka": "./bin/aka"
+    "aka": "./bin/aka.js"
   },
   "scripts": {
     "postinstall": "node scripts/postinstall.js"
@@ -30,7 +30,7 @@
     "url": "https://github.com/fdorantesm/aka/issues"
   },
   "files": [
-    "bin/.gitkeep",
+    "bin/aka.js",
     "scripts/",
     "index.js",
     "README.md"

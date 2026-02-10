@@ -23,4 +23,4 @@ version.txt
 
 # Binaries (will be downloaded by postinstall)
 bin/aka
-!bin/.gitkeep
+!bin/aka.js
