@@ -13,6 +13,8 @@ func Execute() {
 	rootCmd.AddCommand(removeCmd)
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(echoCmd)
+	rootCmd.AddCommand(updateCmd)
+	rootCmd.AddCommand(renameCmd)
 	rootCmd.AddCommand(applyCmd)
 	rootCmd.AddCommand(exportCmd)
 	rootCmd.AddCommand(importCmd)

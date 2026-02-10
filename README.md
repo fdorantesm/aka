@@ -95,6 +95,24 @@ aka echo ll | pbcopy
 aka echo ll | xclip -selection clipboard
 ```
 
+### Update alias
+
+Update an existing alias interactively:
+
+```bash
+aka update ll
+# Current command: ls -la
+# Enter new command: ls -lah --color=auto
+```
+
+### Rename alias
+
+Rename an existing alias:
+
+```bash
+aka rename gs gst
+```
+
 ### Remove alias
 
 ```bash
