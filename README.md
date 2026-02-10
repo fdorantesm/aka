@@ -76,6 +76,25 @@ aka list 'aws*'     # Aliases starting with "aws"
 aka list '*-qa'     # Aliases ending with "-qa"
 ```
 
+### Echo alias command
+
+Print the command for a specific alias:
+
+```bash
+aka echo ll
+# Output: ls -la
+```
+
+Copy to clipboard:
+
+```bash
+# macOS
+aka echo ll | pbcopy
+
+# Linux
+aka echo ll | xclip -selection clipboard
+```
+
 ### Remove alias
 
 ```bash
