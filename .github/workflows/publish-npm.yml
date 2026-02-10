@@ -54,11 +54,11 @@ jobs:
               run: |
                   echo "## 📦 npm Package Published" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
-                  echo "- **Package:** aka-installer" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Package:** aka-cli" >> $GITHUB_STEP_SUMMARY
                   echo "- **Version:** ${{ env.VERSION }}" >> $GITHUB_STEP_SUMMARY
                   echo "- **Tag:** ${{ inputs.npm_tag }}" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "Install with:" >> $GITHUB_STEP_SUMMARY
                   echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-                  echo "npm install -g aka-installer" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install -g aka-cli" >> $GITHUB_STEP_SUMMARY
                   echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

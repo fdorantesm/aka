@@ -10,40 +10,40 @@ A simple alias manager that lets you add, list, and apply command aliases.
 curl -fsSL https://raw.githubusercontent.com/fdorantesm/aka/refs/heads/main/install.sh | bash
 ```
 
-### Using npx
+### Using npm
 
 ```sh
-npx aka-installer
+npm install -g aka-cli
 ```
 
 ### Using yarn
 
 ```sh
-yarn dlx aka-installer
+yarn global add aka-cli
 ```
 
 ### Using pnpm
 
 ```sh
-pnpm dlx aka-installer
+pnpm add -g aka-cli
 ```
 
 ### Using bun
 
 ```sh
-bunx aka-installer
+bun add -g aka-cli
 ```
 
 ### Using deno
 
 ```sh
-deno run -A npm:aka-installer
+deno install -A -n aka npm:aka-cli
 ```
 
 ### Using npmx.dev
 
 ```sh
-npmx aka-installer
+npmx aka-cli
 ```
 
 ## Usage
