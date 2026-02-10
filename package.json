@@ -1,6 +1,6 @@
 {
   "name": "aka-cli",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "A simple alias manager that lets you add, list, and apply command aliases",
   "main": "index.js",
   "bin": {
