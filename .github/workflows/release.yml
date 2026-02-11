@@ -108,3 +108,10 @@ jobs:
           files: |
             dist/aka-linux
             dist/aka-darwin
+
+  publish-npm:
+    needs: release
+    uses: ./.github/workflows/publish-npm.yml
+    secrets: inherit
+    with:
+      npm_tag: latest
