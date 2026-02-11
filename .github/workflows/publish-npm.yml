@@ -20,6 +20,10 @@ on:
                 required: false
                 default: "latest"
                 type: string
+        secrets:
+            NPM_TOKEN:
+                required: false
+                description: "npm authentication token"
 
 jobs:
     publish:
@@ -38,7 +42,8 @@ jobs:
               with:
                   node-version: "20"
                   registry-url: "https://registry.npmjs.org"
-                  always-auth: true
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Verify package.json exists
               run: |
@@ -54,16 +59,32 @@ jobs:
                   echo "VERSION=$VERSION" >> $GITHUB_ENV
                   echo "Publishing version: $VERSION"
 
+            - name: Verify npm authentication
+              run: |
+                  if [ -f ~/.npmrc ]; then
+                    echo "✓ .npmrc file exists"
+                    # Verificar que el token está configurado (sin mostrar el valor)
+                    if grep -q "registry.npmjs.org/:_authToken" ~/.npmrc; then
+                      echo "✓ Auth token configured in .npmrc"
+                    else
+                      echo "✗ Auth token NOT found in .npmrc"
+                    fi
+                  else
+                    echo "✗ .npmrc file NOT found"
+                  fi
+
             - name: Check authentication method
               id: auth_method
               run: |
-                  if [ -n "${{ secrets.NPM_TOKEN }}" ]; then
+                  if [ -n "$NPM_TOKEN" ]; then
                     echo "method=token" >> $GITHUB_OUTPUT
-                    echo "Using NPM_TOKEN for authentication"
+                    echo "✓ Using NPM_TOKEN for authentication"
                   else
                     echo "method=oidc" >> $GITHUB_OUTPUT
-                    echo "Using OIDC (provenance) for authentication"
+                    echo "✓ Using OIDC (provenance) for authentication"
                   fi
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Publish to npm (with token)
               if: steps.auth_method.outputs.method == 'token'
