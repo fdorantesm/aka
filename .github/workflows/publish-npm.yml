@@ -20,10 +20,6 @@ on:
                 required: false
                 default: "latest"
                 type: string
-        secrets:
-            NPM_TOKEN:
-                required: false
-                description: "npm authentication token"
 
 jobs:
     publish:
@@ -31,6 +27,8 @@ jobs:
         permissions:
             contents: read
             id-token: write
+        env:
+            NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
@@ -42,8 +40,6 @@ jobs:
               with:
                   node-version: "20"
                   registry-url: "https://registry.npmjs.org"
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Verify package.json exists
               run: |
@@ -89,14 +85,10 @@ jobs:
             - name: Publish to npm (with token)
               if: steps.auth_method.outputs.method == 'token'
               run: npm publish --access public --tag ${{ inputs.npm_tag }}
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Publish to npm (with OIDC)
               if: steps.auth_method.outputs.method == 'oidc'
               run: npm publish --access public --tag ${{ inputs.npm_tag }} --provenance
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Create deployment summary
               run: |

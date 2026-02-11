@@ -130,3 +130,11 @@ aka export aliases.json
 ```bash
 aka import aliases.json
 ```
+
+## Contributing
+
+Contributions are welcome! Please see [DEPLOYMENT.md](docs/DEPLOYMENT.md) for information about the release and deployment process.
+
+## License
+
+MIT

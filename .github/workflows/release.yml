@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - version.txt
-      - "docs/**"
+    paths:
+      - "src/**"
+      - "go.mod"
+      - "go.sum"
+      - "Makefile"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
