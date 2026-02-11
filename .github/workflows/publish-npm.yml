@@ -13,6 +13,13 @@ on:
                     - beta
                     - next
                     - canary
+    workflow_call:
+        inputs:
+            npm_tag:
+                description: "npm tag (latest, beta, next, etc.)"
+                required: false
+                default: "latest"
+                type: string
 
 jobs:
     publish:
@@ -47,8 +54,28 @@ jobs:
                   echo "VERSION=$VERSION" >> $GITHUB_ENV
                   echo "Publishing version: $VERSION"
 
-            - name: Publish to npm
+            - name: Check authentication method
+              id: auth_method
+              run: |
+                  if [ -n "${{ secrets.NPM_TOKEN }}" ]; then
+                    echo "method=token" >> $GITHUB_OUTPUT
+                    echo "Using NPM_TOKEN for authentication"
+                  else
+                    echo "method=oidc" >> $GITHUB_OUTPUT
+                    echo "Using OIDC (provenance) for authentication"
+                  fi
+
+            - name: Publish to npm (with token)
+              if: steps.auth_method.outputs.method == 'token'
+              run: npm publish --access public --tag ${{ inputs.npm_tag }}
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Publish to npm (with OIDC)
+              if: steps.auth_method.outputs.method == 'oidc'
               run: npm publish --access public --tag ${{ inputs.npm_tag }} --provenance
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Create deployment summary
               run: |
@@ -57,6 +84,7 @@ jobs:
                   echo "- **Package:** aka-cli" >> $GITHUB_STEP_SUMMARY
                   echo "- **Version:** ${{ env.VERSION }}" >> $GITHUB_STEP_SUMMARY
                   echo "- **Tag:** ${{ inputs.npm_tag }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Auth Method:** ${{ steps.auth_method.outputs.method }}" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "Install with:" >> $GITHUB_STEP_SUMMARY
                   echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
